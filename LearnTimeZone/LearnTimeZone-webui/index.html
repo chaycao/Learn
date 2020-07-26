@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+  <div id="app">  
+    <el-date-picker
+      v-model="dateTimeRange"
+      type="datetimerange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      value-format="yyyy-MM-dd HH:mm:ss"
+      >
+    </el-date-picker>
+    <el-button @click="sendDate(dateTimeRange)">查询</el-button>
+  </div>
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return { 
+        dateTimeRange: ['2020-07-01 08:00:00', '2020-07-01 18:00:00'],    
+        dataList: []
+      }
+    },
+    methods: {
+      sendDate: function (dateTimeRange) {    
+        let params = { 
+          startTime: dateTimeRange[0],
+          endTime: dateTimeRange[1],
+        };
+        console.log('startTime:'+dateTimeRange[0]);
+        console.log('endTime:'+dateTimeRange[1]);
+        axios.post(
+          "http://localhost:8080/time",
+          params,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function (response) {
+            this.dataList = response.data;
+            console.log(this.dataList);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    }
+  })
+</script>
+
+</html>
